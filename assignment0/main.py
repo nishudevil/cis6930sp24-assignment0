@@ -35,9 +35,9 @@ def status(conn):
     rows = cur.fetchall()
     for row in rows:
         print(row[0]+"|"+str(row[1]))
-    cur.execute('select * from incidents where incident_number="2024-00004434W"')
-    row2=cur.fetchall()
-    print(row2)
+    # cur.execute('select * from incidents where nature ="Public Assist 14005"')
+    # row2 = cur.fetchall()
+    # print(row2)
 
 def fetchincidents(url):
     headers = {}
@@ -55,31 +55,43 @@ def fetchincidents(url):
 def extractincidents():
     reader = PdfReader("../tmp/Incident_Report.pdf")
     dataList=[]
-    pageList=[]
+    rowList=[]
     for page in reader.pages:
-        pageList+=(page.extract_text().split('\n'))
+        rowList+=(page.extract_text().replace("NORMAN","").replace("POLICE","").replace("DEPARTMENT","").split('\n'))
 
-    for i,page in enumerate(pageList):
-        spaceSplit=page.split(' ')
+    rowList.pop()
+    for i in range(len(rowList)):
+        spaceSplit=rowList[i].strip().split(' ')
         temp=[]
-        size=len(spaceSplit)
-        if size<5 or i==0:
+        n=len(spaceSplit)
+        if i==0 or spaceSplit[0]=="Daily":
             continue
-        
+        if n<5:
+            dataList.pop()
+            spaceSplit=rowList[i-1].strip().split(' ')+rowList[i].strip().split(' ')
+            n=len(spaceSplit)
+
+        #print(spaceSplit)
         incTime=spaceSplit[0]+' '+spaceSplit[1]
         incNum=spaceSplit[2]
-        incORI=spaceSplit[size-1]
+        incORI=spaceSplit[n-1]
         temp.append(incTime)
         temp.append(incNum)
         incLoc=spaceSplit[3]+' '
         incNat=""
         
         for j,space in enumerate(spaceSplit):
-            if j==size-1:
+            if j==n-1:
                 continue
             
             if j>=4:
-                if ( space=="MVA" or not space.isupper() or space=="911" ) and not space=='/' and not space=='9':
+                if space.isdigit():
+                    if space=="911":
+                        incNat+=space+' '
+                    else:
+                        incLoc+=space+' '
+                        
+                elif ( space in ["MVA","COP","DDACTS"] or not space.isupper() ) and space not in ["1/2",'/']:
                     incNat+=space+' '
                 else:
                     incLoc+=space+' '
@@ -88,7 +100,9 @@ def extractincidents():
         temp.append(incNat.strip())
         temp.append(incORI)
         dataList.append(temp)
-        dataListTuples = [tuple(l) for l in dataList]
+
+    
+    dataListTuples = [tuple(l) for l in dataList]
     return dataListTuples
 
 def main(url):

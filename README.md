@@ -4,5 +4,9 @@ Data Engineering Assignment 0
 # Project Description
 Extracting data from an online source and reformatting the data
 
+# Install Steps
+pip install pipenv
+pipenv install pypdf
+
 # How to run
-python main.py --incidents https://www.normanok.gov/sites/default/files/documents/2024-01/2024-01-21_daily_incident_summary.pdf
+pipenv run python main.py --incidents https://www.normanok.gov/sites/default/files/documents/2024-01/2024-01-21_daily_incident_summary.pdf

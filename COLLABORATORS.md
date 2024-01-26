@@ -1,0 +1,1 @@
+Stackoverflow | https://stackoverflow.com/questions/34596967/python-inserting-list-of-tuples-into-sqlite | Helped me to insert data into sqllite3 DB
