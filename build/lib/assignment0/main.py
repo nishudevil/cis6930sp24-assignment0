@@ -6,7 +6,6 @@ import pypdf
 from pypdf import PdfReader
 import sqlite3
 from sqlite3 import Error
-import re
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -27,7 +26,7 @@ def createdb():
 def populatedb(conn,incidents):
     cur=conn.cursor()
     cur.executemany('insert into incidents (incident_time, incident_number, incident_location, nature, incident_ori) values (?,?,?,?,?)',incidents)
-    #conn.commit()
+    conn.commit()
     #print("Inserted into DB!!!!!")
 
 def status(conn):
@@ -53,15 +52,6 @@ def fetchincidents(url):
         
     return data
 
-def extract_last_capital_onwards(s):
-    # Regular expression to find the last capital letter
-    match = re.search(r'[A-Z][a-z]*$', s)
-
-    if match:
-        return match.group()
-    else:
-        return ""
-
 def extractincidents():
     reader = PdfReader("../tmp/Incident_Report.pdf")
     dataList=[]
@@ -77,14 +67,8 @@ def extractincidents():
         if i==0 or spaceSplit[0]=="Daily":
             continue
         if n<5:
-            #check if it is an incomplete entry
-            if(re.match(r".*?/.*?/.*?",spaceSplit[0])):
-                continue
             dataList.pop()
-            #split location from nature by keeping the substring from the last capital letter onwards
-            tempIncNature=rowList[i].strip().split(' ')
-            tempIncNature[0]=extract_last_capital_onwards(tempIncNature[0])
-            spaceSplit=rowList[i-1].strip().split(' ')+tempIncNature
+            spaceSplit=rowList[i-1].strip().split(' ')+rowList[i].strip().split(' ')
             n=len(spaceSplit)
 
         #print(spaceSplit)
@@ -107,7 +91,7 @@ def extractincidents():
                     else:
                         incLoc+=space+' '
                         
-                elif ( space in ["MVA","COP","DDACTS","EMS"] or not space.isupper() ) and space not in ["1/2",'/']:
+                elif ( space in ["MVA","COP","DDACTS"] or not space.isupper() ) and space not in ["1/2",'/']:
                     incNat+=space+' '
                 else:
                     incLoc+=space+' '
