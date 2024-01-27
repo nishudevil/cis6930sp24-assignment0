@@ -5,7 +5,7 @@ setup(
 	version='1.0',
 	author='Nishant Routray',
 	author_email='nishant.routray@ufl.edu',
-	packages=find_packages(exclude=('tests', 'docs', 'resources')),
+	packages=find_packages(exclude=('tests', 'docs', 'resources', 'tmp')),
 	setup_requires=['pytest-runner'],
 	tests_require=['pytest']	
 )
