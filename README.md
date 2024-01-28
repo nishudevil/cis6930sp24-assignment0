@@ -7,10 +7,10 @@ Data Engineering Assignment 0
 Extracting data from an online source, reformatting the data and stroring useful information is SQL DB
 
 # 🛡️ Directories to be present
-/assignment0 contain the main.py <br/>
-/tmp stores the incidentPdf that ois downloaded <br/>
-/resources stores the sql DB that is created <br/>
-/test contains the test files
+`/assignment0` contain the main.py <br/>
+`/tmp` stores the incidentPdf that ois downloaded <br/>
+`/resources` stores the sql DB that is created <br/>
+`/test` contains the test files
 
 # 🐧 Install Steps
 ```bash
