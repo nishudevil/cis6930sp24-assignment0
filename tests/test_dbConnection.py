@@ -3,7 +3,7 @@ import sqlite3
 
 class TestSQLiteConnection(unittest.TestCase):
     def test_database_connection(self):
-        db_path = '../resources/normanpd.db'
+        db_path = './resources/normanpd.db'
         
         try:
             # Attempt to connect to the SQLite database

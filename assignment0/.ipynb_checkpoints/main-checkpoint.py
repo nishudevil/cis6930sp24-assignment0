@@ -11,7 +11,7 @@ import re
 def createdb():
     conn = None
     try:
-        conn = sqlite3.connect('../resources/normanpd.db')
+        conn = sqlite3.connect('./resources/normanpd.db')
         cur=conn.cursor()
         cur.execute('''CREATE TABLE IF NOT EXISTS incidents (
                     incident_time TEXT, incident_number TEXT, incident_location TEXT, nature TEXT, incident_ori TEXT)''')
@@ -38,7 +38,7 @@ def status(conn):
 #Download incidents pdf from url
 def downloadPDF(url):
     try:
-        urlretrieve(url, '../tmp/Incident_Report.pdf')
+        urlretrieve(url, './tmp/Incident_Report.pdf')
     except Exception as e:
         print(e)
 
@@ -53,7 +53,7 @@ def extract_last_capital_onwards(s):
 
 #Split pdf string data by newline and then format each row of pdf to get the required values
 def extractincidents():
-    reader = PdfReader("../tmp/Incident_Report.pdf")
+    reader = PdfReader("./tmp/Incident_Report.pdf")
     dataList=[]
     rowList=[]
     for page in reader.pages:
