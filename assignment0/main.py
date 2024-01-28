@@ -1,15 +1,13 @@
 import argparse
 import urllib.request
 from urllib.request import urlopen,urlretrieve
-import ssl
 import pypdf
 from pypdf import PdfReader
 import sqlite3
 from sqlite3 import Error
 import re
 
-ssl._create_default_https_context = ssl._create_unverified_context
-
+#establish connection to sqlite and create incidents table if not present
 def createdb():
     conn = None
     try:
@@ -17,44 +15,35 @@ def createdb():
         cur=conn.cursor()
         cur.execute('''CREATE TABLE IF NOT EXISTS incidents (
                     incident_time TEXT, incident_number TEXT, incident_location TEXT, nature TEXT, incident_ori TEXT)''')
-        #print("Incidents Table created!!!")
     except Error as e:
         print(e)
     finally:
         return conn
 
-
+#insert formatted pdf data into DB
 def populatedb(conn,incidents):
     cur=conn.cursor()
+    cur.execute('delete from incidents')
     cur.executemany('insert into incidents (incident_time, incident_number, incident_location, nature, incident_ori) values (?,?,?,?,?)',incidents)
-    #conn.commit()
-    #print("Inserted into DB!!!!!")
+    conn.commit()
 
+#Print Nature|Count(*)
 def status(conn):
     cur=conn.cursor()
     cur.execute('select nature, count(*) as events from incidents group by nature order by events desc, nature asc')
     rows = cur.fetchall()
     for row in rows:
         print(row[0]+"|"+str(row[1]))
-    # cur.execute('select * from incidents where nature ="Public Assist 14005"')
-    # row2 = cur.fetchall()
-    # print(row2)
 
-def fetchincidents(url):
-    headers = {}
-    headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"                          
-
-    data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
+#Download incidents pdf from url
+def downloadPDF(url):
     try:
         urlretrieve(url, '../tmp/Incident_Report.pdf')
-        #print("Downloaded file!")
     except Exception as e:
         print(e)
-        
-    return data
 
+# Regular expression to find the last capital letter
 def extract_last_capital_onwards(s):
-    # Regular expression to find the last capital letter
     match = re.search(r'[A-Z][a-z]*$', s)
 
     if match:
@@ -62,6 +51,7 @@ def extract_last_capital_onwards(s):
     else:
         return ""
 
+#Split pdf string data by newline and then format each row of pdf to get the required values
 def extractincidents():
     reader = PdfReader("../tmp/Incident_Report.pdf")
     dataList=[]
@@ -69,6 +59,7 @@ def extractincidents():
     for page in reader.pages:
         rowList+=(page.extract_text().replace("NORMAN","").replace("POLICE","").replace("DEPARTMENT","").split('\n'))
 
+    #remove last row with date only
     rowList.pop()
     for i in range(len(rowList)):
         spaceSplit=rowList[i].strip().split(' ')
@@ -77,17 +68,22 @@ def extractincidents():
         if i==0 or spaceSplit[0]=="Daily":
             continue
         if n<5:
-            #check if it is an incomplete entry
+            #check if it is an incomplete entry, then we ignore that rw
             if(re.match(r".*?/.*?/.*?",spaceSplit[0])):
                 continue
             dataList.pop()
-            #split location from nature by keeping the substring from the last capital letter onwards
+            #if one row data is pushed to a new row, split location from nature by keeping the substring from the last capital letter onwards
             tempIncNature=rowList[i].strip().split(' ')
-            tempIncNature[0]=extract_last_capital_onwards(tempIncNature[0])
+            for j in range(len(tempIncNature)):
+                if(tempIncNature[j].isupper()):
+                    tempIncNature[j]=""
+                else:
+                    tempIncNature[j]=extract_last_capital_onwards(tempIncNature[j])
+                    break
+            
             spaceSplit=rowList[i-1].strip().split(' ')+tempIncNature
             n=len(spaceSplit)
 
-        #print(spaceSplit)
         incTime=spaceSplit[0]+' '+spaceSplit[1]
         incNum=spaceSplit[2]
         incORI=spaceSplit[n-1]
@@ -95,7 +91,7 @@ def extractincidents():
         temp.append(incNum)
         incLoc=spaceSplit[3]+' '
         incNat=""
-        
+        #forming incidents location and nature by some formatting and handling special cases
         for j,space in enumerate(spaceSplit):
             if j==n-1:
                 continue
@@ -123,7 +119,7 @@ def extractincidents():
 
 def main(url):
     # Download data
-    incident_data = fetchincidents(url)
+    downloadPDF(url)
     
     # Extract data
     incidents = extractincidents()
