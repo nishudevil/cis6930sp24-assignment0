@@ -16,7 +16,7 @@ We extract data as a PDF from an online source -> Reformatting the data -> Stori
 ```bash
 #Pre-requisites to setup the environment before running the main program
 pip install pipenv 
-pipenv install pypdf 
+pipenv install pypdf pytest
 pipenv shell
 pip install .
 ```
@@ -27,8 +27,8 @@ pipenv run python assignment0/main.py --incidents <incidents_url>
 
 # 💡 How tor run test
 ```bash
-#Running test cases present in /test dir
-pipenv run python -m unittest -v test/<test_fileName>.py
+#Running DB connectivity test and data validity test that is being inserted into SQL
+pipenv run python -m pytest -v
 ```
 
 # 👉👈 extractincidents() and populatedb():
@@ -38,5 +38,7 @@ Returns a list of tuples as each row of pdf which is then inserted into DB using
 # 🔑 Video Demo
 
 
-https://github.com/nishudevil/cis6930sp24-assignment0/assets/33056648/4d1dc49c-4155-4202-bd48-818678aaf73d
+https://github.com/nishudevil/cis6930sp24-assignment0/assets/33056648/53c49328-b237-4e31-99b7-17eea33e297e
+
+
 
