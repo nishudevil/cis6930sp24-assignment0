@@ -5,13 +5,14 @@ Data Engineering Assignment 0
 Extracting data from an online source, reformatting the data and stroring useful information is SQL DB
 
 # Install Steps
-pip install pipenv
-pipenv install pypdf
+```
+pip install pipenv 
+pipenv install pypdf 
 pipenv shell
 pip install .
-
+```
 # How to run
-pipenv run python assignment0/main.py --incidents <url>
+pipenv run python assignment0/main.py --incidents [Enter your incidents PDF url]
 
 # How tor run test
 pipenv run python test/<test_fileName>.py
