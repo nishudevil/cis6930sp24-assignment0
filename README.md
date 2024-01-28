@@ -28,7 +28,7 @@ pipenv run python assignment0/main.py --incidents <incidents_url>
 # 💡 How tor run test
 ```bash
 #Running test cases present in /test dir
-pipenv run python test/<test_fileName>.py
+pipenv run python -m unittest -v test/<test_fileName>.py
 ```
 
 # 👉👈 extractincidents() and populatedb():
