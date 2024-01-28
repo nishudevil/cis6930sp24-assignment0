@@ -36,3 +36,7 @@ Reads the pdf row wise and formats the data in proepr format by removing all noi
 Returns a list of tuples as each row of pdf which is then inserted into DB using populatedb() 
 
 # 🔑 Video Demo
+
+
+https://github.com/nishudevil/cis6930sp24-assignment0/assets/33056648/4d1dc49c-4155-4202-bd48-818678aaf73d
+
