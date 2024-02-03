@@ -44,7 +44,7 @@ def downloadPDF(url):
 
 # Regular expression to find the last capital letter
 def extract_last_capital_onwards(s):
-    match = re.search(r'[A-Z][a-z]*$', s)
+    match = re.search(r'[A-Z][a-z]*$', re.sub(r'\d+', '', s))
 
     if match:
         return match.group()
@@ -67,8 +67,8 @@ def extractincidents():
         n=len(spaceSplit)
         if i==0 or spaceSplit[0]=="Daily":
             continue
-        if n<5:
-            #check if it is an incomplete entry, then we ignore that rw
+        if n<6:
+            #check if it is an incomplete entry by verfiying if first element is in dd/mm/yy hh:mm pattern, then we ignore that row
             if(re.match(r".*?/.*?/.*?",spaceSplit[0])):
                 continue
             dataList.pop()
@@ -91,19 +91,26 @@ def extractincidents():
         temp.append(incNum)
         incLoc=spaceSplit[3]+' '
         incNat=""
+        natureFlag=False
         #forming incidents location and nature by some formatting and handling special cases
         for j,space in enumerate(spaceSplit):
-            if j==n-1:
+            if j==n-1 or space=="":
+                continue
+
+            if natureFlag==True:
+                incNat+=space+' '
                 continue
             
             if j>=4:
                 if space.isdigit():
                     if space=="911":
+                        natureFlag=True;
                         incNat+=space+' '
                     else:
                         incLoc+=space+' '
                         
-                elif ( space in ["MVA","COP","DDACTS","EMS"] or not space.isupper() ) and space not in ["1/2",'/']:
+                elif ( space in ["MVA","COP","DDACTS","EMS"] or not space.isupper() ) and space not in ['/'] and not re.match(r"^\d{1}/\d{1}",space):
+                    natureFlag=True;
                     incNat+=space+' '
                 else:
                     incLoc+=space+' '
