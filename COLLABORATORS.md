@@ -5,3 +5,5 @@ Stackoverflow | https://stackoverflow.com/questions/18938276/how-to-convert-nest
 Stackoverflow | https://stackoverflow.com/questions/34596967/python-inserting-list-of-tuples-into-sqlite | Helped me to insert data into sqllite3 DB
 
 Stackoverflow | Help in regex for checking date pattern and for [A-Z][a-z] pattern
+
+Simplilearn | https://www.simplilearn.com/tutorials/python-tutorial/python-check-if-file-exists | To check if a file is crated or not
