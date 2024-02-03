@@ -17,7 +17,6 @@ We extract data as a PDF from an online source -> Reformatting the data -> Stori
 #Pre-requisites to setup the environment before running the main program
 pip install pipenv 
 pipenv install pypdf pytest
-pipenv shell
 pip install .
 ```
 # 💡 How to run

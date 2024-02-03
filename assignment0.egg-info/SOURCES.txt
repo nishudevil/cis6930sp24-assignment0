@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.cfg
 setup.py
@@ -8,4 +9,4 @@ assignment0.egg-info/SOURCES.txt
 assignment0.egg-info/dependency_links.txt
 assignment0.egg-info/top_level.txt
 tests/test_dbConnection.py
-tests/test_random.py
+tests/test_extractIncidents.py
