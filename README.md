@@ -14,10 +14,9 @@ We are given an Incident pdf which has data regarding all incidents captured on 
 
 # 🐧 Install Steps
 ```bash
-#Pre-requisites to setup the environment before running the main program, first two steps are not required since Pipfile is included
-pip install pipenv 
-pipenv install pypdf pytest
-pip install .
+#Pre-requisites to setup the environment before running the main program, first step may not be required
+pip install pipenv
+pipenv install .
 ```
 # 💡 How to run
 ```bash
@@ -52,7 +51,7 @@ https://github.com/nishudevil/cis6930sp24-assignment0/assets/33056648/53c49328-b
 
 # ❗ Assumptions
 We consider location will always be in upper case to act as a delimiter from nature field.
-The exceptions include ["MVA","EMS","COP","DDACTS"] which will be added to nature, analyzed after going through all the existing pdfs.
+The exceptions include `["MVA", "EMS", "COP", "DDACTS"]` which will be added to nature, analyzed after going through all the existing pdfs.
 
 # 🔥 Test Cases
 - DB Connection Test
