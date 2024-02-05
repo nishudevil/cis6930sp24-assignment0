@@ -30,7 +30,7 @@ def populatedb(conn,incidents):
 #Print Nature|Count(*)
 def status(conn):
     cur=conn.cursor()
-    cur.execute('select nature, count(*) as events from incidents group by nature order by events desc, nature asc')
+    cur.execute('''select nature, count(*) as events from incidents group by nature order by CASE WHEN nature IS NULL OR nature = '' THEN 1 ELSE 0 END, events desc, nature asc''')
     rows = cur.fetchall()
     for row in rows:
         print(row[0]+"|"+str(row[1]))
@@ -44,7 +44,7 @@ def downloadPDF(url):
 
 # Regular expression to find the last capital letter
 def extract_last_capital_onwards(s):
-    match = re.search(r'[A-Z][a-z]*$', re.sub(r'\d+', '', s))
+    match = re.search(r'[A-Z][a-z]+$|(MVA|COP|EMS|DDACTS|911)$', s)
 
     if match:
         return match.group()
@@ -68,20 +68,19 @@ def extractincidents():
         if i==0 or spaceSplit[0]=="Daily":
             continue
         if n<6 and not re.match(r".*?/.*?/.*?",spaceSplit[0]):
-            #check if it is an incomplete entry by verfiying if first element is in dd/mm/yy hh:mm pattern, then we ignore that row
             dataList.pop()
             #if one row data is pushed to a new row, split location from nature by keeping the substring from the last capital letter onwards
             tempIncNature=rowList[i].strip().split(' ')
             for j in range(len(tempIncNature)):
-                if(tempIncNature[j].isupper()):
-                    tempIncNature[j]=""
-                else:
-                    tempIncNature[j]=extract_last_capital_onwards(tempIncNature[j])
+                prev=tempIncNature[j]
+                tempIncNature[j]=extract_last_capital_onwards(prev)
+                #this will find the first occurence of nature and break it from there
+                if(prev!=tempIncNature[j] and tempIncNature[j]!=""):
                     break
             
             spaceSplit=rowList[i-1].strip().split(' ')+tempIncNature
             n=len(spaceSplit)
-
+        
         incTime=spaceSplit[0]+' '+spaceSplit[1]
         incNum=spaceSplit[2]
         incORI=spaceSplit[n-1]
