@@ -67,10 +67,8 @@ def extractincidents():
         n=len(spaceSplit)
         if i==0 or spaceSplit[0]=="Daily":
             continue
-        if n<6:
+        if n<6 and not re.match(r".*?/.*?/.*?",spaceSplit[0]):
             #check if it is an incomplete entry by verfiying if first element is in dd/mm/yy hh:mm pattern, then we ignore that row
-            if(re.match(r".*?/.*?/.*?",spaceSplit[0])):
-                continue
             dataList.pop()
             #if one row data is pushed to a new row, split location from nature by keeping the substring from the last capital letter onwards
             tempIncNature=rowList[i].strip().split(' ')
@@ -89,7 +87,10 @@ def extractincidents():
         incORI=spaceSplit[n-1]
         temp.append(incTime)
         temp.append(incNum)
-        incLoc=spaceSplit[3]+' '
+        if(n<5):
+            incLoc=""
+        else:
+            incLoc=spaceSplit[3]+' '        
         incNat=""
         natureFlag=False
         #forming incidents location and nature by some formatting and handling special cases

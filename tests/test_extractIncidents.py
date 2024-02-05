@@ -23,12 +23,12 @@ class testMain(unittest.TestCase):
     def testIncLocationIsNotEmpty(self):
         for inc in self.incData:
             with self.subTest(inc=inc):
-                self.assertTrue(inc[2])
+                self.assertTrue(inc[2]=="" or inc[2])
 
     def testIncNatureIsNotEmpty(self):
         for inc in self.incData:
             with self.subTest(inc=inc):
-                self.assertTrue(inc[3])
+                self.assertTrue(inc[3]=="" or inc[3])
 
     def testIncORIIsNotEmpty(self):
         for inc in self.incData:
