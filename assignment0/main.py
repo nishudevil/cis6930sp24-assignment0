@@ -30,7 +30,7 @@ def populatedb(conn,incidents):
 #Print Nature|Count(*)
 def status(conn):
     cur=conn.cursor()
-    cur.execute('''select nature, count(*) as events from incidents group by nature order by CASE WHEN nature IS NULL OR nature = '' THEN 1 ELSE 0 END, events desc, nature asc''')
+    cur.execute('''select nature, count(*) as events from incidents group by nature order by events desc, nature asc''')
     rows = cur.fetchall()
     for row in rows:
         print(row[0]+"|"+str(row[1]))
